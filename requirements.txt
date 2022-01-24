@@ -1,0 +1,5 @@
+typer
+colorama
+shellingham
+pytest
+rich
