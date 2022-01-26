@@ -1,13 +1,13 @@
 import datetime
-from dataclasses import dataclass
-
+from dataclasses import dataclass, field
+from itertools import count
 
 bookList = []
 
 
 @dataclass
 class book:
-    ID: int
+    id: int = field(default_factory=count().__next__, init=False)
     Title: str
     Author: str
     yearPublished: int
@@ -19,7 +19,6 @@ class book:
 
 
 def bookInput():
-
     Title = input("What is the title of the book? ")
     Author = input("Who is the Author of the book? ")
     yearPublsihed = int(input("When was the book published? "))
@@ -28,54 +27,32 @@ def bookInput():
         str(input("When did you start reading the book? (yyyy-mm-dd) ")), "%Y-%m-%d"
     )
 
-    # Check the book has been finished
+    # Check the book has been finished and ff the book has been finished ask for the finish date
     readCheck = input("Have you finished the book? [Y/N] ")
     if readCheck == "Y":
         Read = True
-    else:
-        Read = False
-
-    # If the book has been finished ask for the finish date
-    if Read == "True":
-        dateFinished = datetime.strptime(
+        dateFinished = datetime.datetime.strptime(
             str(input("When did you finish reading the book? (yyyy-mm-dd) ")),
             "%Y-%m-%d",
         )
-
         pagesRead = Pages
-
     else:
+        Read = False
         pagesRead = int(input("How many pages have you read? "))
         dateFinished = None
 
-    return (
-        Title,
-        Author,
-        yearPublsihed,
-        Pages,
-        dateStarted,
-        dateFinished,
-        pagesRead,
-        Read,
-    )
+    return {
+        "Title": Title,
+        "Author": Author,
+        "Year Published": yearPublsihed,
+        "Pages": Pages,
+        "Date started": dateStarted,
+        "Date finished": dateFinished,
+        "Pages read": pagesRead,
+        "Read": Read,
+    }
 
 
-def addBook(bookInfo):
-    newBook = book
-    newBook.Title = Title
-    newBook.Author = Author
-    newBook.yearPublished = yearPubslished
-    newBook.Pages = Pages
-    newBook.pagesRead = pagesRead
-    newBook.dateStarted = dateStarted
-    newBook.dateFinished = dateFinished
-    newBook.Read = Read
 
-    bookList.append(newBook)
-
-
-bookInfo = bookInput()
-addBook(bookInfo)
-
-print(bookList)
-
+newBook = bookInput()
+bookList.append(newBook)
