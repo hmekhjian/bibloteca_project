@@ -2,6 +2,7 @@ import datetime
 from dataclasses import dataclass, field
 from itertools import count
 
+
 bookList = []
 
 
@@ -18,10 +19,10 @@ class book:
     Read: bool = False
 
 
-def bookInput():
+def addBook():
     Title = input("What is the title of the book? ")
     Author = input("Who is the Author of the book? ")
-    yearPublsihed = int(input("When was the book published? "))
+    yearPublished = int(input("When was the book published? "))
     Pages = int(input("How long is the book? "))
     dateStarted = datetime.datetime.strptime(
         str(input("When did you start reading the book? (yyyy-mm-dd) ")), "%Y-%m-%d"
@@ -41,18 +42,36 @@ def bookInput():
         pagesRead = int(input("How many pages have you read? "))
         dateFinished = None
 
-    return {
-        "Title": Title,
-        "Author": Author,
-        "Year Published": yearPublsihed,
-        "Pages": Pages,
-        "Date started": dateStarted,
-        "Date finished": dateFinished,
-        "Pages read": pagesRead,
-        "Read": Read,
-    }
+    bookInstance = book(
+        Title, Author, yearPublished, Pages, dateStarted, dateFinished, pagesRead, Read
+    )
+
+    bookList.append(bookInstance)
+
+
+def removeBook(id):
+    for i in range(len(bookList)):
+        if bookList[i].id == id:
+            del bookList[i]
+
+def listBooks():
 
 
 
-newBook = bookInput()
-bookList.append(newBook)
+
+
+
+    # return {
+    #     "Title": Title,
+    #     "Author": Author,
+    #     "Year Published": yearPublsihed,
+    #     "Pages": Pages,
+    #     "Date started": dateStarted,
+    #     "Date finished": dateFinished,
+    #     "Pages read": pagesRead,
+    #     "Read": Read,
+    # }
+
+
+# newBook = addBook()()
+# bookList.append(newBook)
