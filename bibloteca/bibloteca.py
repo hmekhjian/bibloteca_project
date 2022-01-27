@@ -1,4 +1,9 @@
 import datetime
+
+from rich.console import Console
+from rich.table import Table
+
+
 from dataclasses import dataclass, field
 from itertools import count
 
@@ -54,12 +59,36 @@ def removeBook(id):
         if bookList[i].id == id:
             del bookList[i]
 
+
 def listBooks():
 
+    bookTable = Table(title="Personal Reading")
 
+    bookTable.add_column("id", justify="left", style="cyan", no_wrap=True)
+    bookTable.add_column("Title", justify="left", style="cyan", no_wrap=True)
+    bookTable.add_column("Author", justify="left", style="cyan", no_wrap=True)
+    bookTable.add_column("Year", justify="left", style="cyan")
+    bookTable.add_column("Pages", justify="left", style="cyan", no_wrap=True)
+    bookTable.add_column("Date started", justify="left", style="cyan", no_wrap=True)
+    bookTable.add_column("Date finished", justify="left", style="cyan", no_wrap=True)
+    bookTable.add_column("Progress", justify="left", style="cyan", no_wrap=True)
+    bookTable.add_column("Read", justify="left", style="cyan", no_wrap=True)
 
+    for i in range(len(bookList)):
+        bookTable.add_row(
+            str(bookList[i].id),
+            bookList[i].Title,
+            bookList[i].Author,
+            str(bookList[i].yearPublished),
+            str(bookList[i].Pages),
+            str(bookList[i].dateStarted),
+            str(bookList[i].dateFinished),
+            str(bookList[i].pagesRead),
+            str(bookList[i].Read),
+        )
 
-
+    console = Console()
+    console.print(bookTable)
 
     # return {
     #     "Title": Title,
@@ -74,4 +103,10 @@ def listBooks():
 
 
 # newBook = addBook()()
-# bookList.append(newBook)
+# bookList.append(newBook):
+
+addBook()
+addBook()
+
+
+listBooks()
