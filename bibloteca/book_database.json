@@ -1,0 +1,51 @@
+{
+	"books": [
+		{
+			"id": "0",
+			"Title": "The Brothers Karamazov",
+			"Author": "Fyodor Dostoevsky",
+			"yearPublished": 1880,
+			"Pages": 558,
+			"dateStarted": "2009-11-12",
+			"dateFinished": "2009-12-14",
+			"pagesRead": 558,
+			"Read": true
+		},
+
+		{
+			"id": "1",
+			"Title": "Way of Kings",
+			"Author": "Brandon Sanderson",
+			"yearPublished": 2010,
+			"Pages": 1083,
+			"dateStarted": "2020-03-12",
+			"dateFinished": "2020-05-20",
+			"pagesRead": 1083,
+			"Read": true
+		},
+
+		{
+			"id": "2",
+			"Title": "Dune",
+			"Author": "Frank Herbert",
+			"yearPublished": 1968,
+			"Pages": 568,
+			"dateStarted": "2016-03-12",
+			"dateFinished": "2016-03-24",
+			"pagesRead": 568,
+			"Read": true
+		},
+
+		{
+			"id": "3",
+			"Title": "Farenheit 451",
+			"Author": "Ray Bradbury",
+			"yearPublished": 1953,
+			"Pages": 256,
+			"dateStarted": "2021-12-28",
+			"dateFinished": null,
+			"pagesRead": 158,
+			"Read": false
+		}
+	]
+}

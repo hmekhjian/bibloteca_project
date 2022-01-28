@@ -1,9 +1,9 @@
-import datetime
+import datetime, json
 
 from rich.console import Console
 from rich.table import Table
 
-
+from types import SimpleNamespace
 from dataclasses import dataclass, field
 from itertools import count
 
@@ -90,23 +90,9 @@ def listBooks():
     console = Console()
     console.print(bookTable)
 
-    # return {
-    #     "Title": Title,
-    #     "Author": Author,
-    #     "Year Published": yearPublsihed,
-    #     "Pages": Pages,
-    #     "Date started": dateStarted,
-    #     "Date finished": dateFinished,
-    #     "Pages read": pagesRead,
-    #     "Read": Read,
-    # }
+
+with open("book_database.json") as f:
+    bookData = json.load(f, object_hook=lambda d: SimpleNamespace(**d))
 
 
-# newBook = addBook()()
-# bookList.append(newBook):
-
-addBook()
-addBook()
-
-
-listBooks()
+# listBooks()
