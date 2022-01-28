@@ -1,4 +1,4 @@
-import datetime, json
+import datetime, json, os
 
 from rich.console import Console
 from rich.table import Table
@@ -91,8 +91,9 @@ def listBooks():
     console.print(bookTable)
 
 
+os.chdir(r"C:\Users\hmekh\Documents\GitHub\bibloteca_project\bibloteca")
 with open("book_database.json") as f:
     bookData = json.load(f, object_hook=lambda d: SimpleNamespace(**d))
 
-
+print(type(bookData))
 # listBooks()
