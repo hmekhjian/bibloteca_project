@@ -1,5 +1,4 @@
-{
-	"books": [
+[
 		{
 			"id": "0",
 			"Title": "The Brothers Karamazov",
@@ -47,5 +46,5 @@
 			"pagesRead": 158,
 			"Read": false
 		}
-	]
-}
+]
+

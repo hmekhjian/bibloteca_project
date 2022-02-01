@@ -1,11 +1,9 @@
+# import modules and dependencies
 import datetime, json, os
-
 from rich.console import Console
 from rich.table import Table
 
-from types import SimpleNamespace
-from dataclasses import dataclass, field
-from itertools import count
+from dataclasses import dataclass
 
 
 bookList = []
@@ -13,7 +11,7 @@ bookList = []
 
 @dataclass
 class book:
-    id: int = field(default_factory=count().__next__, init=False)
+    id: int
     Title: str
     Author: str
     yearPublished: int
@@ -24,6 +22,13 @@ class book:
     Read: bool = False
 
 
+# os.chdir(r"C:\Users\hmekh\Documents\GitHub\bibloteca_project\bibloteca")
+with open("book_database.json") as json_file:
+    book_data = json.loads(json_file.read())
+    for b in book_data:
+        bookList.append(book(**b))
+
+
 def addBook():
     Title = input("What is the title of the book? ")
     Author = input("Who is the Author of the book? ")
@@ -31,7 +36,7 @@ def addBook():
     Pages = int(input("How long is the book? "))
     dateStarted = datetime.datetime.strptime(
         str(input("When did you start reading the book? (yyyy-mm-dd) ")), "%Y-%m-%d"
-    )
+    ).date()
 
     # Check the book has been finished and ff the book has been finished ask for the finish date
     readCheck = input("Have you finished the book? [Y/N] ")
@@ -40,7 +45,7 @@ def addBook():
         dateFinished = datetime.datetime.strptime(
             str(input("When did you finish reading the book? (yyyy-mm-dd) ")),
             "%Y-%m-%d",
-        )
+        ).date()
         pagesRead = Pages
     else:
         Read = False
@@ -91,9 +96,4 @@ def listBooks():
     console.print(bookTable)
 
 
-os.chdir(r"C:\Users\hmekh\Documents\GitHub\bibloteca_project\bibloteca")
-with open("book_database.json") as f:
-    bookData = json.load(f, object_hook=lambda d: SimpleNamespace(**d))
-
-print(type(bookData))
-# listBooks()
+listBooks()
