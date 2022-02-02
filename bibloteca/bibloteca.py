@@ -2,11 +2,12 @@
 import datetime, json, os
 from rich.console import Console
 from rich.table import Table
-
+from collections import namedtuple
 from dataclasses import dataclass
+from pprint import pprint
 
-
-bookList = []
+# bookList = []
+bookIndex = namedtuple("bookID", "bookObject")
 
 
 @dataclass
@@ -20,13 +21,6 @@ class book:
     dateFinished: datetime.datetime
     pagesRead: int = 0
     Read: bool = False
-
-
-# os.chdir(r"C:\Users\hmekh\Documents\GitHub\bibloteca_project\bibloteca")
-with open("book_database.json") as json_file:
-    book_data = json.loads(json_file.read())
-    for b in book_data:
-        bookList.append(book(**b))
 
 
 def addBook():
@@ -81,19 +75,35 @@ def listBooks():
 
     for i in range(len(bookList)):
         bookTable.add_row(
-            str(bookList[i].id),
-            bookList[i].Title,
-            bookList[i].Author,
-            str(bookList[i].yearPublished),
-            str(bookList[i].Pages),
-            str(bookList[i].dateStarted),
-            str(bookList[i].dateFinished),
-            str(bookList[i].pagesRead),
-            str(bookList[i].Read),
+            str(bookList[f'{i}'].id),
+            bookList[f'{i}'].Title,
+            bookList[f'{i}'].Author,
+            str(bookList[f'{i}'].yearPublished),
+            str(bookList[f'{i}'].Pages),
+            str(bookList[f'{i}'].dateStarted),
+            str(bookList[f'{i}'].dateFinished),
+            str(bookList[f'{i}'].pagesRead),
+            str(bookList[f'{i}'].Read),
         )
 
     console = Console()
     console.print(bookTable)
 
 
+# os.chdir(r"C:\Users\hmekh\Documents\GitHub\bibloteca_project\bibloteca")
+# with open("book_database.json") as json_file:
+#     bookData = json.loads(json_file.read())
+#     for b in bookData:
+#         bookList.append(book(**b))
+
+
+bookList = {}
+with open("book_database.json") as json_file:
+    bookData = json.loads(json_file.read())
+    for b in bookData:
+        newBook = book(**b)
+        bookList[newBook.id] = newBook
+
+
+# pprint(bookList)
 listBooks()
