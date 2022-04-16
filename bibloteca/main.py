@@ -5,40 +5,13 @@ from rich.table import Table
 from collections import namedtuple
 from dataclasses import dataclass
 from pprint import pprint
-
-
-# bookList = []
-bookIndex = namedtuple("bookID", "bookObject")
-
-
-@dataclass
-class book:
-    id: int
-    Title: str
-    Author: str
-    yearPublished: int
-    Pages: int
-    dateStarted: datetime.datetime
-    dateFinished: datetime.datetime
-    pagesRead: int = 0
-    Read: bool = False
-
-
-
-
-
-bookList = {}
-with open("book_database.json") as json_file:
-    bookData = json.loads(json_file.read())
-    for b in bookData:
-        newBook = book(**b)
-        bookList[newBook.id] = newBook
-
+from model import book
+from database import get_all_books
 
 app = typer.Typer()
 
 
-@app.command()
+@app.command(short_help="List all books currently in your library")
 def list():
     bookTable = Table(title="Personal Reading")
 
@@ -51,6 +24,8 @@ def list():
     bookTable.add_column("Date finished", justify="left", style="cyan", no_wrap=True)
     bookTable.add_column("Progress", justify="left", style="cyan", no_wrap=True)
     bookTable.add_column("Read", justify="left", style="cyan", no_wrap=True)
+
+    get_all_books()
 
     for i in range(len(bookList)):
         bookTable.add_row(
@@ -69,14 +44,28 @@ def list():
     console.print(bookTable)
 
 
-@app.command()
-def add():
-    typer.echo("Deleting user: Hiro Hamada")
+@app.command(short_help="Adds a book to the library")
+def add(title: str):
+    typer.echo(f"Adding '{title}' to the library")
+    list()
 
 
-@app.command()
-def remove():
-    typer.echo("Deleting user: Hiro Hamada")
+@app.command(short_help="Removes a book from the library")
+def remove(bookIndex: int):
+    typer.echo("Removing book")
+    list()
+
+
+@app.command(short_help="Updates information of the book")
+def update(bookIndex: int):
+    typer.echo("Updating book")
+    list()
+
+
+@app.command(short_help="Mark a book complete")
+def complete(bookIndex: int):
+    typer.echo("Book is completed")
+    list()
 
 
 if __name__ == "__main__":
