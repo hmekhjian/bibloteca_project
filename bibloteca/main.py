@@ -2,11 +2,13 @@ import typer
 import datetime, json, os
 from rich.console import Console
 from rich.table import Table
+from rich import box
 from collections import namedtuple
 from dataclasses import dataclass
 from pprint import pprint
 from model import book
-from database import get_all_books
+from database import get_all_books, delete_book 
+import os
 
 app = typer.Typer()
 
@@ -15,7 +17,7 @@ app = typer.Typer()
 
 @app.command(short_help="List all books currently in your library")
 def list():
-    bookTable = Table(title="Personal Reading")
+    bookTable = Table(title="Personal Reading", show_lines=True, box= box.HORIZONTALS)
 
     bookTable.add_column("id", justify="left", style="yellow", no_wrap=True)
     bookTable.add_column("Title", justify="left", style="cyan", no_wrap=True)
@@ -41,7 +43,7 @@ def list():
             str(bookList[i].pagesRead), 
             '+' if bookList[i].Read == 1 else '-')
             
-
+    os.system('cls' if os.name == 'nt' else 'clear')
     console = Console()
     console.print(bookTable)
 
@@ -53,8 +55,9 @@ def add(title: str):
 
 
 @app.command(short_help="Removes a book from the library")
-def remove(bookIndex: int):
+def remove(id: int):
     typer.echo("Removing book")
+    delete_book(int(id))
     list()
 
 

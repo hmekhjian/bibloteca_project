@@ -43,7 +43,11 @@ def add_book():
 
 
 
-
+def delete_book(id):
+    with conn:
+        c.execute(
+            f"DELETE FROM books WHERE id = '{id}'"
+        )
 
 
 def get_all_books() -> List[book]:
