@@ -40,7 +40,7 @@ def list():
             str(bookList[i].Pages), 
             str(bookList[i].dateStarted), 
             str(bookList[i].dateFinished), 
-            str(bookList[i].pagesRead), 
+            str(round((bookList[i].pagesRead / bookList[i].Pages)*100)) + '%', 
             '+' if bookList[i].Read == 1 else '-')
             
     os.system('cls' if os.name == 'nt' else 'clear')
