@@ -42,6 +42,10 @@ def add_book():
         )
 
 
+
+
+
+
 def get_all_books() -> List[book]:
     c.execute("select * from books")
     results = c.fetchall()
@@ -49,3 +53,4 @@ def get_all_books() -> List[book]:
     for result in results:
         bookList.append(book(*result))
     return bookList
+

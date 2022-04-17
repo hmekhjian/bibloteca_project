@@ -11,11 +11,13 @@ from database import get_all_books
 app = typer.Typer()
 
 
+
+
 @app.command(short_help="List all books currently in your library")
 def list():
     bookTable = Table(title="Personal Reading")
 
-    bookTable.add_column("id", justify="left", style="cyan", no_wrap=True)
+    bookTable.add_column("id", justify="left", style="yellow", no_wrap=True)
     bookTable.add_column("Title", justify="left", style="cyan", no_wrap=True)
     bookTable.add_column("Author", justify="left", style="cyan", no_wrap=True)
     bookTable.add_column("Year", justify="left", style="cyan")
@@ -25,20 +27,20 @@ def list():
     bookTable.add_column("Progress", justify="left", style="cyan", no_wrap=True)
     bookTable.add_column("Read", justify="left", style="cyan", no_wrap=True)
 
-    get_all_books()
 
+    bookList = get_all_books()
     for i in range(len(bookList)):
         bookTable.add_row(
-            str(bookList[f"{i}"].id),
-            bookList[f"{i}"].Title,
-            bookList[f"{i}"].Author,
-            str(bookList[f"{i}"].yearPublished),
-            str(bookList[f"{i}"].Pages),
-            str(bookList[f"{i}"].dateStarted),
-            str(bookList[f"{i}"].dateFinished),
-            str(bookList[f"{i}"].pagesRead),
-            str(bookList[f"{i}"].Read),
-        )
+            str(bookList[i].id), 
+            bookList[i].Title, 
+            bookList[i].Author, 
+            str(bookList[i].yearPublished), 
+            str(bookList[i].Pages), 
+            str(bookList[i].dateStarted), 
+            str(bookList[i].dateFinished), 
+            str(bookList[i].pagesRead), 
+            '+' if bookList[i].Read == 1 else '-')
+            
 
     console = Console()
     console.print(bookTable)
@@ -66,6 +68,10 @@ def update(bookIndex: int):
 def complete(bookIndex: int):
     typer.echo("Book is completed")
     list()
+
+
+
+
 
 
 if __name__ == "__main__":
