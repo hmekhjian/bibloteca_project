@@ -1,8 +1,8 @@
 from sre_constants import JUMP
 import requests, json
 
-searchTerm = 'Dune'
-response = requests.get("http://openlibrary.org/search.json?q=Dune&limit=1")
+searchTerm = 'Iron+Gold'
+response = requests.get(f"http://openlibrary.org/search.json?q={searchTerm}&limit=1")
 
 def jprint(obj):
     # create a formatted string of the Python JSON object
