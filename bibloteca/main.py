@@ -27,18 +27,18 @@ def list():
     bookTable.add_column("Progress", justify="left", style="cyan", no_wrap=True)
     bookTable.add_column("Read", justify="left", style="cyan", no_wrap=True)
 
-    bookList = get_all_books()
-    for i in range(len(bookList)):
+    book_list = get_all_books()
+    for i in range(len(book_list)):
         bookTable.add_row(
-            str(bookList[i].id),
-            bookList[i].Title,
-            bookList[i].Author,
-            str(bookList[i].yearPublished),
-            str(bookList[i].Pages),
-            str(bookList[i].dateStarted),
-            str(bookList[i].dateFinished),
-            str(round((bookList[i].pagesRead / bookList[i].Pages) * 100)) + "%",
-            "+" if bookList[i].Read == 1 else "-",
+            str(book_list[i].id),
+            book_list[i].Title,
+            book_list[i].Author,
+            str(book_list[i].year_published),
+            str(book_list[i].Pages),
+            str(book_list[i].date_started),
+            str(book_list[i].date_finished),
+            str(round((book_list[i].pages_read / book_list[i].Pages) * 100)) + "%",
+            "+" if book_list[i].Read == 1 else "-",
         )
 
     os.system("cls" if os.name == "nt" else "clear")
@@ -47,10 +47,11 @@ def list():
 
 
 @app.command(short_help="Adds a book to the library")
-def add(title: str):
-    typer.echo(f"Adding '{title}' to the library")
-    add_book(title)
-    # list()
+def add(title: str, date_started: str = typer.Argument("x"), date_finished: str=typer.Argument("x"), pages_read: int = typer.Argument(0), read: int = typer.Argument(1), category: str=typer.Argument('Reading')):
+    add_book(title, date_started, date_finished, pages_read, read, category)
+    list()
+
+
 
 
 @app.command(short_help="Removes a book from the library")
@@ -61,13 +62,13 @@ def remove(id: int):
 
 
 @app.command(short_help="Updates information of the book")
-def update(bookIndex: int):
+def update(book_index: int):
     typer.echo("Updating book")
     list()
 
 
 @app.command(short_help="Mark a book complete")
-def complete(bookIndex: int):
+def complete(book_index: int):
     typer.echo("Book is completed")
     list()
 

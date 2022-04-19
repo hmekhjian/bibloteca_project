@@ -11,6 +11,7 @@ def jprint(obj):
 
 
 data = response.json()
+print(data['docs'][0]['title'])
 print(data['docs'][0]['first_publish_year'])
 print(data['docs'][0]['number_of_pages_median'])
 print(data['docs'][0]['author_name'][0])

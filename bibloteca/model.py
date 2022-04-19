@@ -7,9 +7,11 @@ class book:
     id: int
     Title: str
     Author: str
-    yearPublished: int
+    year_published: int
     Pages: int
-    dateStarted: datetime.datetime
-    dateFinished: datetime.datetime
-    pagesRead: int = 0
+    date_started: str # datetime.datetime
+    date_finished: str # datetime.datetime
+    Category: str
+    pages_read: int = 0
     Read: bool = False
+    
