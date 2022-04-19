@@ -7,17 +7,15 @@ from collections import namedtuple
 from dataclasses import dataclass
 from pprint import pprint
 from model import book
-from database import get_all_books, delete_book 
+from database import get_all_books, add_book, delete_book
 import os
 
 app = typer.Typer()
 
 
-
-
 @app.command(short_help="List all books currently in your library")
 def list():
-    bookTable = Table(title="Personal Reading", show_lines=True, box= box.HORIZONTALS)
+    bookTable = Table(title="Personal Reading", show_lines=True, box=box.HORIZONTALS)
 
     bookTable.add_column("id", justify="left", style="yellow", no_wrap=True)
     bookTable.add_column("Title", justify="left", style="cyan", no_wrap=True)
@@ -29,21 +27,21 @@ def list():
     bookTable.add_column("Progress", justify="left", style="cyan", no_wrap=True)
     bookTable.add_column("Read", justify="left", style="cyan", no_wrap=True)
 
-
     bookList = get_all_books()
     for i in range(len(bookList)):
         bookTable.add_row(
-            str(bookList[i].id), 
-            bookList[i].Title, 
-            bookList[i].Author, 
-            str(bookList[i].yearPublished), 
-            str(bookList[i].Pages), 
-            str(bookList[i].dateStarted), 
-            str(bookList[i].dateFinished), 
-            str(round((bookList[i].pagesRead / bookList[i].Pages)*100)) + '%', 
-            '+' if bookList[i].Read == 1 else '-')
-            
-    os.system('cls' if os.name == 'nt' else 'clear')
+            str(bookList[i].id),
+            bookList[i].Title,
+            bookList[i].Author,
+            str(bookList[i].yearPublished),
+            str(bookList[i].Pages),
+            str(bookList[i].dateStarted),
+            str(bookList[i].dateFinished),
+            str(round((bookList[i].pagesRead / bookList[i].Pages) * 100)) + "%",
+            "+" if bookList[i].Read == 1 else "-",
+        )
+
+    os.system("cls" if os.name == "nt" else "clear")
     console = Console()
     console.print(bookTable)
 
@@ -51,7 +49,8 @@ def list():
 @app.command(short_help="Adds a book to the library")
 def add(title: str):
     typer.echo(f"Adding '{title}' to the library")
-    list()
+    add_book(title)
+    # list()
 
 
 @app.command(short_help="Removes a book from the library")
@@ -71,10 +70,6 @@ def update(bookIndex: int):
 def complete(bookIndex: int):
     typer.echo("Book is completed")
     list()
-
-
-
-
 
 
 if __name__ == "__main__":

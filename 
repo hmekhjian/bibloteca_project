@@ -1,0 +1,89 @@
+[33mcommit ff9cf801fe3567fbf2657faf5648a8f4c463ba54[m[33m ([m[1;36mHEAD -> [m[1;32mtyper-setup[m[33m, [m[1;31morigin/typer-setup[m[33m)[m
+Author: hmekhjian <h.mekhjian@gmail.com>
+Date:   Mon Apr 18 00:15:14 2022 +0100
+
+    Progress percentage display
+
+[33mcommit 0d51fb1be0d95daed42c99d40181624d017658ca[m
+Author: hmekhjian <h.mekhjian@gmail.com>
+Date:   Mon Apr 18 00:09:51 2022 +0100
+
+    Remove command added
+
+[33mcommit fe16579567034c8ecae9b2b967897b4728eebec6[m
+Author: hmekhjian <h.mekhjian@gmail.com>
+Date:   Sun Apr 17 23:43:37 2022 +0100
+
+    Sqlite list command connection
+
+[33mcommit 6efdee3e2dc5a1da7098681314cfa06922227845[m
+Author: hmekhjian <h.mekhjian@gmail.com>
+Date:   Sat Apr 16 22:37:14 2022 +0100
+
+    Sqlite implementation
+
+[33mcommit 14a48ed47a18a8eda8b59b59f27e130ccd1b2390[m
+Author: hmekhjian <h.mekhjian@gmail.com>
+Date:   Sun Apr 10 22:41:59 2022 +0100
+
+    Added list command to the CLI
+
+[33mcommit 11ab47bc9fd04bff52344f530a5c4690cb4b3484[m
+Author: hmekhjian <h.mekhjian@gmail.com>
+Date:   Sun Apr 10 21:54:55 2022 +0100
+
+    Initial commit
+
+[33mcommit 1c269109bf11b694c391fa8c21dd6274c2ad07b0[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m
+Author: hmekhjian <h.mekhjian@gmail.com>
+Date:   Wed Feb 2 09:05:11 2022 +0000
+
+    deseriliszing json into a dictionary
+
+[33mcommit ded25da4fc57f3b7e10b09e862dc28dd27ac8507[m
+Author: hmekhjian <h.mekhjian@gmail.com>
+Date:   Tue Feb 1 08:54:13 2022 +0000
+
+    deserialize json
+
+[33mcommit f2d0575ca0ccb5fd4ce2d4048c4dfc6916b26dd8[m
+Author: hmekhjian <4435581+hmekhjian@users.noreply.github.com>
+Date:   Fri Jan 28 22:07:18 2022 +0000
+
+    open
+
+[33mcommit e9a7044444d9fa12f3e20a8277a035c2ba7e346d[m
+Author: hmekhjian <4435581+hmekhjian@users.noreply.github.com>
+Date:   Fri Jan 28 15:13:10 2022 +0000
+
+    Added sample data to populate
+
+[33mcommit 77333a5f0e3afb418189615346a2b0b71b9b1713[m
+Author: hmekhjian <h.mekhjian@gmail.com>
+Date:   Thu Jan 27 08:00:11 2022 +0000
+
+    list command
+
+[33mcommit 6ebce33253aa45ad697e4c024ffde32fc1b0c2c2[m
+Author: hmekhjian <4435581+hmekhjian@users.noreply.github.com>
+Date:   Wed Jan 26 19:58:54 2022 +0000
+
+    add &* remove functions
+
+[33mcommit d5f11a03595ecd5a3d0ff92b1ec2acb5da168794[m
+Author: hmekhjian <4435581+hmekhjian@users.noreply.github.com>
+Date:   Wed Jan 26 17:53:27 2022 +0000
+
+    Class structure
+
+[33mcommit 4ea2ebd3f7026d0c1941bdaaed706b5102c296ca[m
+Author: hmekhjian <h.mekhjian@gmail.com>
+Date:   Wed Jan 26 12:59:03 2022 +0000
+
+    addbook function
+
+[33mcommit 5e425d2912edd19fe5bdd6c8019b7733dbb3b063[m
+Author: hmekhjian <h.mekhjian@gmail.com>
+Date:   Mon Jan 24 21:02:06 2022 +0000
+
+    first commit
