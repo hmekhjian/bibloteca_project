@@ -22,10 +22,8 @@ def list():
     bookTable.add_column("Author", justify="left", style="cyan", no_wrap=True)
     bookTable.add_column("Year", justify="left", style="cyan")
     bookTable.add_column("Pages", justify="left", style="cyan", no_wrap=True)
-    bookTable.add_column("Date started", justify="left", style="cyan", no_wrap=True)
-    bookTable.add_column("Date finished", justify="left", style="cyan", no_wrap=True)
     bookTable.add_column("Progress", justify="left", style="cyan", no_wrap=True)
-    bookTable.add_column("Read", justify="left", style="cyan", no_wrap=True)
+    bookTable.add_column("Status", justify="left", style="cyan", no_wrap=True)
 
     book_list = get_all_books()
     for i in range(len(book_list)):
@@ -35,10 +33,8 @@ def list():
             book_list[i].Author,
             str(book_list[i].year_published),
             str(book_list[i].Pages),
-            str(book_list[i].date_started),
-            str(book_list[i].date_finished),
             str(round((book_list[i].pages_read / book_list[i].Pages) * 100)) + "%",
-            "+" if book_list[i].Read == 1 else "-",
+            str(book_list[i].status),
         )
 
     os.system("cls" if os.name == "nt" else "clear")
@@ -47,11 +43,30 @@ def list():
 
 
 @app.command(short_help="Adds a book to the library")
-def add(title: str, date_started: str = typer.Argument("x"), date_finished: str=typer.Argument("x"), pages_read: int = typer.Argument(0), read: int = typer.Argument(1), category: str=typer.Argument('Reading')):
-    add_book(title, date_started, date_finished, pages_read, read, category)
+def add(
+    title: str,
+    date_started: str = typer.Argument("x"),
+    date_finished: str = typer.Argument("x"),
+    pages_read: int = typer.Argument(0),
+    reading: bool = typer.Option(
+        False, show_default=False, help="Set the status to reading"
+    ),
+    toread: bool = typer.Option(
+        False, show_default=False, help="Set the status to Want to read"
+    ),
+    completed: bool = typer.Option(
+        False, show_default=False, help="Set the status to completed"
+    ),
+):
+    if reading:
+        status = "Reading"
+    elif toread:
+        status = "Want to read"
+    elif completed:
+        status = "Completed"
+
+    add_book(title, date_started, date_finished, pages_read, status)
     list()
-
-
 
 
 @app.command(short_help="Removes a book from the library")

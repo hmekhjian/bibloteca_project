@@ -16,38 +16,44 @@ c.execute(
     date_started text,
     date_finished text,
     pages_read integer,
-    Read integer,
-    Category text)
+    status text)
     """
 )
 
 
-def add_book(title, date_started, date_finished, pages_read, read, category):
+def add_book(title, date_started, date_finished, pages_read, status):
+
+    # Set the book.id based on the number of items in the database table
     c.execute("SELECT count(*) FROM books")
     count = c.fetchone()[0]
-    
     book.id = count if count else 0
 
-    searchTerm = title.strip().replace(" ", "+")
-    response = requests.get(f"http://openlibrary.org/search.json?q={searchTerm}&limit=1")
-    data = response.json()
+    # Search for the book title on OpenLibrary and pull the neccessary data from the json
 
-    book.Title = data['docs'][0]['title']
-    book.Author = data['docs'][0]['author_name'][0]
-    book.year_published = data['docs'][0]['first_publish_year']
-    book.Pages = data['docs'][0]['number_of_pages_median']
+    searchTerm = title.strip().replace(" ", "+")
+    response = requests.get(
+        f"http://openlibrary.org/search.json?q={searchTerm}&limit=1"
+    )
+    data = response.json()
+    book.Title = data["docs"][0]["title"]
+    book.Author = data["docs"][0]["author_name"][0]
+    book.year_published = data["docs"][0]["first_publish_year"]
+    book.Pages = int(data["docs"][0]["number_of_pages_median"])
     book.date_started = date_started
     book.date_finished = date_finished
-    book.Category = category
-    book.pages_read = pages_read
-    book.Read = read
-    
+    book.status = status
 
-    # print(book.id, book.Title, book.Author, book.year_published, book.Pages, book.pages_read, book.date_started, book.date_finished, book.Read, book.Category)
+    # Set the number of pages_read based on the status of the book
+    if book.status == "Completed":
+        book.pages_read = book.Pages
+    else:
+        book.pages_read = pages_read
+
+    # Write the book instance to the Sqlite table
 
     with conn:
         c.execute(
-            "INSERT INTO books VALUES (:id, :Title, :Author, :year_published, :Pages, :date_started, :date_finished, :pages_read, :Read, :Category)",
+            "INSERT INTO books VALUES (:id, :Title, :Author, :year_published, :Pages, :date_started, :date_finished, :pages_read, :status)",
             {
                 "id": book.id,
                 "Title": book.Title,
@@ -57,10 +63,9 @@ def add_book(title, date_started, date_finished, pages_read, read, category):
                 "date_started": book.date_started,
                 "date_finished": book.date_finished,
                 "pages_read": book.pages_read,
-                "Read": book.Read,
-                "Category": book.Category
-            })
-
+                "status": book.status,
+            },
+        )
 
 
 def delete_book(id):

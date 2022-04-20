@@ -9,9 +9,7 @@ class book:
     Author: str
     year_published: int
     Pages: int
-    date_started: str # datetime.datetime
-    date_finished: str # datetime.datetime
-    Category: str
+    date_started: str  # datetime.datetime
+    date_finished: str  # datetime.datetime
     pages_read: int = 0
-    Read: bool = False
-    
+    status: str = "Reading"
