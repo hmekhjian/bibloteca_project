@@ -29,11 +29,11 @@ def add_book(title, date_started, date_finished, pages_read, status):
     book.id = count if count else 0
 
     # Search for the book title on OpenLibrary and pull the neccessary data from the json
-
     searchTerm = title.strip().replace(" ", "+")
     response = requests.get(
         f"http://openlibrary.org/search.json?q={searchTerm}&limit=1"
     )
+
     data = response.json()
     book.Title = data["docs"][0]["title"]
     book.Author = data["docs"][0]["author_name"][0]
@@ -50,7 +50,6 @@ def add_book(title, date_started, date_finished, pages_read, status):
         book.pages_read = pages_read
 
     # Write the book instance to the Sqlite table
-
     with conn:
         c.execute(
             "INSERT INTO books VALUES (:id, :Title, :Author, :year_published, :Pages, :date_started, :date_finished, :pages_read, :status)",
@@ -69,14 +68,38 @@ def add_book(title, date_started, date_finished, pages_read, status):
 
 
 def delete_book(id):
+    c.execute("SELECT count(*) FROM books")
+    count = c.fetchone()[0]
+
     with conn:
-        c.execute(f"DELETE FROM books WHERE id = '{id}'")
+        c.execute(f"DELETE FROM books WHERE id = :id", {"id": id})
+        # Reposition the book.id
+        for pos in range(id+1, count):
+            change_id(pos, pos-1, False)
+
+# Function for renumbering the book.id
+def change_id(old_id: int, new_id: int, commit = True):
+    c.execute('UPDATE books SET id = :new_id WHERE id = :old_id', {'old_id': old_id, 'new_id': new_id})
+    if commit:
+        conn.commit()
 
 
-def get_all_books() -> List[book]:
-    c.execute("select * from books")
+
+def get_all_books(list_order) -> List[book]:
+    c.execute(f"select * from books {list_order}")
     results = c.fetchall()
     bookList = []
     for result in results:
         bookList.append(book(*result))
     return bookList
+
+
+def complete_book(id):
+    c.execute("SELECT count(*) FROM books")
+    count = c.fetchone()[0]
+
+    with conn:
+        c.execute(f"UPDATE books SET Pages = :new_page WHERE id = :id", {"new_page": id})
+        # Reposition the book.id
+        for pos in range(id+1, count):
+            change_id(pos, pos-1, False)
