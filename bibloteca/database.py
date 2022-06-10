@@ -20,6 +20,7 @@ c.execute(
     """
 )
 
+#Command Functions
 # Function for adding a book for the Sqlite database
 def add_book(title, date_started, date_finished, pages_read, status):
 

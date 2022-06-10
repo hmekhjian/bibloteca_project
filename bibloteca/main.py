@@ -32,7 +32,7 @@ def list(order: bool = typer.Option(False)):
     bookTable = Table(title="Personal Library", show_lines=True, box=box.HORIZONTALS)
 
     bookTable.add_column("id", justify="left", style="grey85", no_wrap=True)
-    bookTable.add_column("Title", justify="left", style="cyan", no_wrap=True)
+    bookTable.add_column("Title", justify="left", style="cyan", no_wrap=False)
     bookTable.add_column("Author", justify="left", style="cyan", no_wrap=True)
     bookTable.add_column("Year", justify="left", style="cyan")
     bookTable.add_column("Pages", justify="left", style="cyan", no_wrap=True)
@@ -139,12 +139,6 @@ def update(
     elif p:
         progress_update(book_index, p)
         list("")
-
-
-@app.command(short_help="Mark a book complete")
-def complete(book_index: int):
-    typer.echo("Book is completed")
-    list()
 
 
 if __name__ == "__main__":
