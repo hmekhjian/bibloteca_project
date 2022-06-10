@@ -20,7 +20,7 @@ c.execute(
     """
 )
 
-
+# Function for adding a book for the Sqlite database
 def add_book(title, date_started, date_finished, pages_read, status):
 
     # Set the book.id based on the number of items in the database table
@@ -67,6 +67,7 @@ def add_book(title, date_started, date_finished, pages_read, status):
         )
 
 
+# Function for deleting a specific book from the sqlite database
 def delete_book(id):
     c.execute("SELECT count(*) FROM books")
     count = c.fetchone()[0]
@@ -74,17 +75,30 @@ def delete_book(id):
     with conn:
         c.execute(f"DELETE FROM books WHERE id = :id", {"id": id})
         # Reposition the book.id
-        for pos in range(id+1, count):
-            change_id(pos, pos-1, False)
+        for pos in range(id + 1, count):
+            change_id(pos, pos - 1, False)
 
+
+def delete_books_all():
+    c.execute("SELECT count(*) FROM books")
+    count = c.fetchone()[0]
+
+    with conn:
+        c.execute("DELETE FROM books")
+
+
+# Worker functions
 # Function for renumbering the book.id
-def change_id(old_id: int, new_id: int, commit = True):
-    c.execute('UPDATE books SET id = :new_id WHERE id = :old_id', {'old_id': old_id, 'new_id': new_id})
+def change_id(old_id: int, new_id: int, commit=True):
+    c.execute(
+        "UPDATE books SET id = :new_id WHERE id = :old_id",
+        {"old_id": old_id, "new_id": new_id},
+    )
     if commit:
         conn.commit()
 
 
-
+# Function for fetching all the books from the sqlite database
 def get_all_books(list_order) -> List[book]:
     c.execute(f"select * from books {list_order}")
     results = c.fetchall()
@@ -94,12 +108,25 @@ def get_all_books(list_order) -> List[book]:
     return bookList
 
 
+# Function for setting a book's status to complete
 def complete_book(id):
     c.execute("SELECT count(*) FROM books")
     count = c.fetchone()[0]
 
     with conn:
-        c.execute(f"UPDATE books SET Pages = :new_page WHERE id = :id", {"new_page": id})
-        # Reposition the book.id
-        for pos in range(id+1, count):
-            change_id(pos, pos-1, False)
+        c.execute(
+            f"UPDATE books SET pages_read = Pages, status = 'Completed' WHERE id = :id",
+            {"id": id},
+        )
+
+
+# Function for setting a book's progress
+def progress_update(id, pages_read):
+    c.execute("SELECT count(*) FROM books")
+    count = c.fetchone()[0]
+
+    with conn:
+        c.execute(
+            f"UPDATE books SET pages_read = :pages_read, status = 'Reading' WHERE id = :id",
+            {"id": id, "pages_read": pages_read},
+        )
