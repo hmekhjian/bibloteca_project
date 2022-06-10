@@ -11,6 +11,7 @@ from model import book
 from database import get_all_books, add_book, delete_book
 import os
 
+
 app = typer.Typer()
 
 
