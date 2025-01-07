@@ -1,9 +1,10 @@
 import typing
+from bibloteca import Base
 
 # Setup classes for the book objects
 
 
-class Book:
+class Book(Base):
     allowed_status = ["To Read", "Read", "Reading"]
 
     def __init__(
