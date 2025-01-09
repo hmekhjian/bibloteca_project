@@ -12,6 +12,7 @@ class dbActions:
 
         # Create the table if it doesn't exist
         Base.metadata.create_all(self.engine)
+# TODO Create a get_book method and refactor all the functions below to use it
 
     def add_book(self, title, author, pages, status="To Read"):
         with self.Session() as session:
@@ -43,7 +44,7 @@ class dbActions:
                 raise Exception(
                     f"No book found with the provided {'id' if 'id' in kwargs else 'title'}."
                 )
-
+# TODO Move the update logic to the book class and refactor this to use the correct method based on the kwarg
     def update_book(self, book_id, **kwargs):
         with self.Session() as session:
             book = session.query(Book).get(book_id)
@@ -53,3 +54,4 @@ class dbActions:
                 session.commit()
             else:
                 raise Exception(f"Specified book with {book_id} not found")
+
