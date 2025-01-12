@@ -1,6 +1,6 @@
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker
-from models import Base, Book
+from models import Base, Book, Tag
 
 
 class dbActions:
@@ -13,6 +13,7 @@ class dbActions:
         # Create the table if it doesn't exist
         Base.metadata.create_all(self.engine)
 
+    # TODO Refactor all queries to use sa.select method. statmenet => excecute
     def get_book_by_id(self, id):
         with self.Session() as session:
             book = session.query(Book).get(id)
@@ -29,9 +30,23 @@ class dbActions:
             book_list = session.query(Book).all()
             return book_list
 
-    def add_book(self, title, author, pages, status="To Read"):
+    def add_book(self, title, author, pages, status="To Read", tag_names=None):
         with self.Session() as session:
             new_book = Book(title=title, author=author, pages=pages, status=status)
+
+            if tag_names:
+                tag_query = sa.select(Tag).where(Tag.name.in_(tag_names))
+                existing_tags = session.execute(tag_query).scalars().all()
+                existing_tag_names = {tag.name for tag in existing_tags}
+                for tag_name in tag_names:
+                    if tag_name in existing_tag_names:
+                        new_book.tags.append(
+                            next(tag for tag in existing_tags if tag.name == tag_name)
+                        )
+                    else:
+                        new_tag = Tag(name=tag_name)
+                        session.add(new_tag)
+                        new_book.tags.append(new_tag)
 
             session.add(new_book)
             session.commit()
