@@ -1,10 +1,19 @@
+from __future__ import annotations
 import typing
-from sqlalchemy.orm import declarative_base, Mapped, mapped_column
+from sqlalchemy.orm import declarative_base, Mapped, mapped_column, relationship
 import sqlalchemy as sa
 
 Base = declarative_base()  # Create Base here
 
-# Setup classes for the book objects
+# Setup classes for the book and tag objects
+
+
+book_tag_table = sa.Table(
+    "book_tag",
+    Base.metadata,
+    sa.Column("book_id", sa.ForeignKey("Books.id"), primary_key=True),
+    sa.Column("tag_id", sa.ForeignKey("Tags.id"), primary_key=True),
+)
 
 
 class Book(Base):
@@ -16,9 +25,9 @@ class Book(Base):
     rating: Mapped[float] = mapped_column(default=0.0)
     status: Mapped[str] = mapped_column(default="To Read")
     progress: Mapped[int] = mapped_column(default=0)
-    # tags: Mapped[list]
-
-    #  TODO Add the many to many relationship to the database to create tag functionality
+    tags: Mapped[list[Tag]] = relationship(
+        secondary=book_tag_table, back_populates="books"
+    )
 
     allowed_status = ["To Read", "Read", "Reading"]
 
@@ -33,6 +42,11 @@ class Book(Base):
             self.progress = self.pages
 
     def __repr__(self):
+        return (
+            f"Book(id={self.id}, title={self.title}, author={self.author}, "
+            f"pages={self.pages}, rating={self.rating}, status={self.status}, "
+            f"progress={self.progress})"
+        )
         return (
             f"Book(id={self.id}, title={self.title}, author={self.author}, "
             f"pages={self.pages}, rating={self.rating}, status={self.status}, "
@@ -64,4 +78,25 @@ class Book(Base):
         else:
             raise ValueError(
                 f"{new_progress} is not a valid value for progress. Please enter a number between 0 and {self.pages}"
+            )
+    def update_progress(self, progress):
+        self.progress = progress
+        return self
+
+
+class Tag(Base):
+    __tablename__ = "Tags"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str]
+    books: Mapped[list[Book]] = relationship(
+        secondary=book_tag_table, back_populates="tags"
+    )
+
+    def __init__(self, name):
+        super().__init__(name=name)
+        if isinstance(name, str):
+            self.name = name
+        else:
+            raise ValueError(
+                f"{name} is not a valid tag name. Please profide a valid string"
             )
