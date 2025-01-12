@@ -47,11 +47,6 @@ class Book(Base):
             f"pages={self.pages}, rating={self.rating}, status={self.status}, "
             f"progress={self.progress})"
         )
-        return (
-            f"Book(id={self.id}, title={self.title}, author={self.author}, "
-            f"pages={self.pages}, rating={self.rating}, status={self.status}, "
-            f"progress={self.progress})"
-        )
 
     def update_rating(self, new_rating: float):
         if isinstance(new_rating, float) and 0 <= new_rating <= 5.0:
@@ -79,9 +74,6 @@ class Book(Base):
             raise ValueError(
                 f"{new_progress} is not a valid value for progress. Please enter a number between 0 and {self.pages}"
             )
-    def update_progress(self, progress):
-        self.progress = progress
-        return self
 
 
 class Tag(Base):
