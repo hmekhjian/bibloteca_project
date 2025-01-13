@@ -88,3 +88,28 @@ class dbActions:
                 session.commit()
             else:
                 raise Exception(f"Specified book with {book_id} not found")
+
+
+    def add_book_tag(self, book_id, tags):
+        with self.Session() as session:
+            book = self.get_book_by_id(book_id)
+            if tags:
+                if book:
+                    tag_query = sa.select(Tag).where(Tag.name.in_(tags))
+                    existing_tags = session.execute(tag_query).scalars().all()
+                    existing_tag_names = {tag.name for tag in existing_tags}
+                    for tag_name in tags: 
+                        if tag_name in existing_tag_names:
+                            book.tags.append(
+                                next(tag for tag in existing_tags if tag.name == tag_name)
+                            )
+                        else:
+                            new_tag = Tag(name=tag_name)
+                            session.add(new_tag)
+                            book.tags.append(new_tag)
+                session.commit()
+            else:
+                raise ValueError(
+                    "Please provide a valid tag or tags."
+                )
+
