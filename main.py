@@ -8,7 +8,7 @@ db_actions = dbActions()
 
 # class biblotecaApp(App):
 
-print(db_actions.list_books())
+db_actions.add_book_tag(1, ['sci-fi', 'prophecy'])
 
 # if __name__ == "__main__":
 #     app = biblotecaApp()

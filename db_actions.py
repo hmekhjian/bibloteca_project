@@ -89,27 +89,28 @@ class dbActions:
             else:
                 raise Exception(f"Specified book with {book_id} not found")
 
-
     def add_book_tag(self, book_id, tags):
         with self.Session() as session:
-            book = self.get_book_by_id(book_id)
-            if tags:
-                if book:
-                    tag_query = sa.select(Tag).where(Tag.name.in_(tags))
-                    existing_tags = session.execute(tag_query).scalars().all()
-                    existing_tag_names = {tag.name for tag in existing_tags}
-                    for tag_name in tags: 
-                        if tag_name in existing_tag_names:
-                            book.tags.append(
-                                next(tag for tag in existing_tags if tag.name == tag_name)
-                            )
-                        else:
-                            new_tag = Tag(name=tag_name)
-                            session.add(new_tag)
-                            book.tags.append(new_tag)
-                session.commit()
-            else:
-                raise ValueError(
-                    "Please provide a valid tag or tags."
-                )
+            if not tags:
+                raise ValueError("Please provide a valid tag or tags.")
+            tag_names = [tags] if isinstance(tags, str) else tags
 
+            book = self.get_book_by_id(book_id)
+            if not book:
+                raise ValueError(f"No book with the ID {book_id} was found")
+
+            tag_query = sa.select(Tag).where(Tag.name.in_(tag_names))
+            existing_tags = session.execute(tag_query).scalars().all()
+            existing_tag_names = {tag.name for tag in existing_tags}
+            for tag_name in tags:
+                if tag_name in existing_tag_names:
+                    book.tags.append(
+                        next(tag for tag in existing_tags if tag.name == tag_name)
+                    )
+                else:
+                    new_tag = Tag(name=tag_name)
+                    session.add(new_tag)
+                    book.tags.append(new_tag)
+            session.commit()
+
+# TODO Add a remove tag from book function and think about what happens to tags if book with a tag are deleted. Are they orphaned and kept i nthe dp or cleaned up?
