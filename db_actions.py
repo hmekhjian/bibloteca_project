@@ -1,6 +1,7 @@
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker
 from models import Base, Book, Tag
+from contextlib import contextmanager
 
 
 class dbActions:
@@ -13,25 +14,37 @@ class dbActions:
         # Create the table if it doesn't exist
         Base.metadata.create_all(self.engine)
 
+    @contextmanager
+    def session_factory(self):
+        session = self.Session()
+
+        try:
+            yield session
+            session.commit()
+        except:
+            session.rollback()
+            raise
+        finally:
+            session.close()
+
     # TODO Refactor all queries to use sa.select method. statmenet => excecute
-    def get_book_by_id(self, id):
-        with self.Session() as session:
-            book = session.query(Book).get(id)
-            return book
+    def get_book_by_id(self, id, session):
+        book = session.query(Book).get(id)
+        return book
 
     def get_book_by_title(self, title):
-        with self.Session() as session:
+        with self.session_factory() as session:
             book = session.query(Book).filter_by(title=title)
             return book
 
     # Add add ordering for sorting options in the app and custom filtering for use with tags later on
     def list_books(self):
-        with self.Session() as session:
+        with self.session_factory() as session:
             book_list = session.query(Book).all()
             return book_list
 
     def add_book(self, title, author, pages, status="To Read", tag_names=None):
-        with self.Session() as session:
+        with self.session_factory() as session:
             new_book = Book(title=title, author=author, pages=pages, status=status)
 
             if tag_names:
@@ -49,7 +62,6 @@ class dbActions:
                         new_book.tags.append(new_tag)
 
             session.add(new_book)
-            session.commit()
 
     def remove_book(self, **kwargs):
         with self.Session() as session:
@@ -90,18 +102,32 @@ class dbActions:
                 raise Exception(f"Specified book with {book_id} not found")
 
     def add_book_tag(self, book_id, tags):
+<<<<<<< HEAD
         with self.Session() as session:
             if not tags:
                 raise ValueError("Please provide a valid tag or tags.")
             tag_names = [tags] if isinstance(tags, str) else tags
 
             book = self.get_book_by_id(book_id)
+=======
+
+        with self.session_factory() as session:
+            if not tags:
+                raise ValueError("Please provide a valid tag or tags.")
+            tag_names = [tags] if isinstance(tags, str) else tags
+            book = self.get_book_by_id(book_id, session)
+
+>>>>>>> beda16f556f9fa086836246c49b444485bcfb6f6
             if not book:
                 raise ValueError(f"No book with the ID {book_id} was found")
 
             tag_query = sa.select(Tag).where(Tag.name.in_(tag_names))
             existing_tags = session.execute(tag_query).scalars().all()
             existing_tag_names = {tag.name for tag in existing_tags}
+<<<<<<< HEAD
+=======
+
+>>>>>>> beda16f556f9fa086836246c49b444485bcfb6f6
             for tag_name in tags:
                 if tag_name in existing_tag_names:
                     book.tags.append(
@@ -111,6 +137,10 @@ class dbActions:
                     new_tag = Tag(name=tag_name)
                     session.add(new_tag)
                     book.tags.append(new_tag)
+<<<<<<< HEAD
             session.commit()
+=======
+
+>>>>>>> beda16f556f9fa086836246c49b444485bcfb6f6
 
 # TODO Add a remove tag from book function and think about what happens to tags if book with a tag are deleted. Are they orphaned and kept i nthe dp or cleaned up?
