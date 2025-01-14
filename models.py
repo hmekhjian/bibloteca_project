@@ -41,12 +41,12 @@ class Book(Base):
         if self.status == "Read":
             self.progress = self.pages
 
-    def __repr__(self):
-        return (
-            f"Book(id={self.id}, title={self.title}, author={self.author}, "
-            f"pages={self.pages}, rating={self.rating}, status={self.status}, "
-            f"progress={self.progress})"
-        )
+    # def __repr__(self):
+    #     return (
+    #         f"Book(id={self.id}, title={self.title}, author={self.author}, "
+    #         f"pages={self.pages}, rating={self.rating}, status={self.status}, "
+    #         f"progress={self.progress})"
+    #     )
 
     def update_rating(self, new_rating: float):
         if isinstance(new_rating, float) and 0 <= new_rating <= 5.0:

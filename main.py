@@ -1,20 +1,28 @@
 from db_actions import dbActions
+from textual.app import App, ComposeResult
+from textual.widgets import DataTable
+from models import Book, Tag
+
 
 db_actions = dbActions()
 
 
-# db_actions.add_book('Harry Potter', 'J.K. Rowling', 500)
-# db_actions.remove_book(id= 2)
+class biblotecaApp(App):
+    def compose(self) -> ComposeResult:
+        yield DataTable()
+
+    def on_mount(self) -> None:
+        table = self.query_one(DataTable)
+        table.cursor_type = "row"
+        table.zebra_stripes = True
+        table.add_columns(
+            "id", "title", "author", "pages", "progress", "status", "rating", "tags"
+        )
+
+        table_data = db_actions.list_books()
+        table.add_rows(table_data)
 
 
-<<<<<<< HEAD
-db_actions.add_book_tag(1, ['sci-fi', 'prophecy'])
-=======
-db_actions.add_book_tag(1, ["sci-fi", "prophecy"])
-
-
->>>>>>> beda16f556f9fa086836246c49b444485bcfb6f6
-
-# if __name__ == "__main__":
-#     app = biblotecaApp()
-#     app.run()
+if __name__ == "__main__":
+    app = biblotecaApp()
+    app.run()
