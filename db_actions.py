@@ -80,15 +80,15 @@ class dbActions:
             session.add(new_book)
 
     def remove_book(self, **kwargs):
-        with self.Session() as session:
+        with self.session_factory() as session:
             if "id" in kwargs and "title" in kwargs:
                 raise ValueError("Please provide either an ID or title, not both")
             elif "id" in kwargs:
                 book_id = kwargs["id"]
-                book = self.get_book_by_id(book_id)
+                book = self.get_book_by_id(book_id, session)
             elif "title" in kwargs:
                 book_title = kwargs["title"]
-                book = self.get_book_by_title(book_title)
+                book = self.get_book_by_title(book_title, session)
             else:
                 raise ValueError(
                     "Please provide an ID or title to identify the book to be removed"
