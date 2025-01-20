@@ -30,9 +30,7 @@ class biblotecaApp(App):
         table.clear()
         table.cursor_type = "row"
         table.zebra_stripes = True
-        table.add_columns(
-            "id", "title", "author", "pages", "progress", "status", "rating", "tags"
-        )
+        
 
         table_data = db_actions.list_books()
         table.add_rows(table_data)
@@ -54,6 +52,10 @@ class biblotecaApp(App):
                 self.log(f"Error removing book: {e}") 
 
     def on_mount(self) -> None:
+        table = self.query_one(DataTable)
+        table.add_columns(
+            "id", "title", "author", "pages", "progress", "status", "rating", "tags"
+        )
         self.load_and_populate_table()
         table = self.query_one(DataTable)
         table.focus()
