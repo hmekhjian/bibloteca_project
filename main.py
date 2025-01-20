@@ -1,6 +1,6 @@
 from db_actions import dbActions
 from textual.app import App, ComposeResult
-from textual.widgets import DataTable, Static, ListItem, ListView, Label, Footer
+from textual.widgets import DataTable, Static, ListItem, ListView, Label, Footer, Button
 from textual.containers import Vertical
 from models import Book, Tag
 
@@ -11,11 +11,14 @@ db_actions = dbActions()
 class biblotecaApp(App):
     CSS_PATH = "layout.tcss"
 
-    BINDINGS = [("d", "remove_book", "Remove highlighted book")]
+    BINDINGS = [
+        ("a", "add_book", "Add Book"),
+        ("d", "remove_book", "Remove highlighted book"),
+    ]
 
     def compose(self) -> ComposeResult:
         with Vertical(id="sidebar"):
-            yield Footer()
+
             yield ListView(
                 ListItem(Label("All")),
                 ListItem(Label("Reading")),
@@ -24,13 +27,13 @@ class biblotecaApp(App):
             )
 
         yield DataTable()
+        yield Footer()
 
     def load_and_populate_table(self):
         table = self.query_one(DataTable)
         table.clear()
         table.cursor_type = "row"
         table.zebra_stripes = True
-        
 
         table_data = db_actions.list_books()
         table.add_rows(table_data)
@@ -49,7 +52,9 @@ class biblotecaApp(App):
                 self.load_and_populate_table()
 
             except Exception as e:
-                self.log(f"Error removing book: {e}") 
+                self.log(f"Error removing book: {e}")
+
+    def action_add_book(self): ...
 
     def on_mount(self) -> None:
         table = self.query_one(DataTable)
