@@ -1,12 +1,18 @@
 from db_actions import dbActions
 from textual.app import App, ComposeResult
-from textual.widgets import DataTable, Static, ListItem, ListView, Label, Footer, Button
-from textual.containers import Vertical
+from textual.widgets import DataTable, Static, ListItem, ListView, Label, Footer, Button, Input, OptionList
+from textual.containers import Vertical, VerticalGroup
 from models import Book, Tag
 
 
 db_actions = dbActions()
 
+
+class book_addition(VerticalGroup):
+    """A widget for adding books"""
+    def compose(self) -> ComposeResult:
+        yield Input(placeholder= 'Book title, Author or ISBN')
+        yield OptionList()
 
 class biblotecaApp(App):
     CSS_PATH = "layout.tcss"
@@ -54,7 +60,8 @@ class biblotecaApp(App):
             except Exception as e:
                 self.log(f"Error removing book: {e}")
 
-    def action_add_book(self): ...
+    def action_add_book(self): 
+        new_book_screen = book_addition()
 
     def on_mount(self) -> None:
         table = self.query_one(DataTable)
