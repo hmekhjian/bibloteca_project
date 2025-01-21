@@ -1,26 +1,46 @@
 from db_actions import dbActions
 from textual.app import App, ComposeResult
-from textual.widgets import DataTable, Static, ListItem, ListView, Label, Footer, Button, Input, OptionList
-from textual.containers import Vertical, VerticalGroup
+from textual.widgets import (
+    DataTable,
+    Static,
+    ListItem,
+    ListView,
+    Label,
+    Footer,
+    Button,
+    Input,
+    OptionList,
+)
+from textual.screen import Screen
+from textual.containers import Vertical, VerticalGroup, Container, Center
 from models import Book, Tag
 
 
 db_actions = dbActions()
 
 
-class book_addition(VerticalGroup):
+class Book_addition(Screen):
     """A widget for adding books"""
+
     def compose(self) -> ComposeResult:
-        yield Input(placeholder= 'Book title, Author or ISBN')
-        yield OptionList()
+        with Container(id="book-addition-dialog"):
+            with Center():
+                yield Input(placeholder="Book title, Author or ISBN", id="book-search")
+            with Center():
+                yield OptionList(id="search-results")
+            with Center():
+                yield Button("Add Book", id="add-book-button") 
+
 
 class biblotecaApp(App):
     CSS_PATH = "layout.tcss"
 
     BINDINGS = [
-        ("a", "add_book", "Add Book"),
+        ("a", "push_screen('book_addition')", "Add Book"),
         ("d", "remove_book", "Remove highlighted book"),
     ]
+
+    SCREENS = {"book_addition": Book_addition}
 
     def compose(self) -> ComposeResult:
         with Vertical(id="sidebar"):
@@ -60,8 +80,10 @@ class biblotecaApp(App):
             except Exception as e:
                 self.log(f"Error removing book: {e}")
 
-    def action_add_book(self): 
-        new_book_screen = book_addition()
+    def action_add_book(self):
+        new_book_screen = Book_addition()
+        self.query_one(ComposeResult).mount(new_book_screen)
+        new_book_screen.scroll_visible()
 
     def on_mount(self) -> None:
         table = self.query_one(DataTable)
