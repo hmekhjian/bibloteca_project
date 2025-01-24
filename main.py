@@ -10,17 +10,27 @@ from textual.widgets import (
     Button,
     Input,
     OptionList,
+    Placeholder,
+    RichLog
 )
 from textual.screen import Screen
-from textual.containers import Vertical, VerticalGroup, Container, Center
+from textual.containers import Vertical, VerticalGroup, Container, Center, Horizontal
 from models import Book, Tag
 
 
 db_actions = dbActions()
 
 
+class Book_Edit(Screen):
+    """A widget to edit book information"""
+
+    pass
+
+
 class Book_addition(Screen):
     """A widget for adding books"""
+
+    BINDINGS = [("b", "app.pop_screen", "Go Back")]
 
     def compose(self) -> ComposeResult:
         with Container(id="book-addition-dialog"):
@@ -29,7 +39,8 @@ class Book_addition(Screen):
             with Center():
                 yield OptionList(id="search-results")
             with Center():
-                yield Button("Add Book", id="add-book-button") 
+                yield Button("Add Book", id="add-book-button")
+            yield Footer()
 
 
 class biblotecaApp(App):
@@ -43,17 +54,21 @@ class biblotecaApp(App):
     SCREENS = {"book_addition": Book_addition}
 
     def compose(self) -> ComposeResult:
-        with Vertical(id="sidebar"):
+        with Horizontal(id="body"):
+            with Vertical(id="sidebar"):
 
-            yield ListView(
-                ListItem(Label("All")),
-                ListItem(Label("Reading")),
-                ListItem(Label("To Read")),
-                ListItem(Label("Read")),
-            )
+                yield ListView(
+                    ListItem(Label("All")),
+                    ListItem(Label("Reading")),
+                    ListItem(Label("To Read")),
+                    ListItem(Label("Read")),
+                )
 
-        yield DataTable()
-        yield Footer()
+            yield DataTable()
+            with Vertical(id= 'book-info'):
+                yield Placeholder(id="book-cover")
+                yield RichLog (id= 'book-details')
+            yield Footer()
 
     def load_and_populate_table(self):
         table = self.query_one(DataTable)

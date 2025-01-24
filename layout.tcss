@@ -1,6 +1,6 @@
 #sidebar {
     dock: left;
-    width: 15%;
+    width: 10%;
     height: 100%;
 }
 
@@ -17,6 +17,10 @@
     height: 10; /* Set a fixed height for the OptionList */
 }
 
-Screen {
+#book-info {
+    width: 30%;
+}
+
+Book_addition {
     align: center middle;
 }
