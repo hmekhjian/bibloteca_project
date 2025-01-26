@@ -1,6 +1,6 @@
 import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker, joinedload
-from models import Base, Book, Tag
+from models import Base, Book, Tag, book_tag_table
 from contextlib import contextmanager
 
 
@@ -141,5 +141,18 @@ class dbActions:
                     session.add(new_tag)
                     book.tags.append(new_tag)
 
+    # TODO Add a remove tag from book function and think about what happens to tags if book with a tag are deleted. Are they orphaned and kept i nthe dp or cleaned up?
 
-# TODO Add a remove tag from book function and think about what happens to tags if book with a tag are deleted. Are they orphaned and kept i nthe dp or cleaned up?
+    def get_all_tags(self):
+        with self.session_factory() as session:
+            stmt = (
+                sa.select(
+                    Tag.name, sa.func.count(book_tag_table.c.book_id).label("tag_count")
+                )
+                .join(book_tag_table, Tag.id == book_tag_table.c.book_id, isouter=True)
+                .group_by(Tag.name)
+                .order_by(sa.desc("tag_count"))
+            )
+
+            result = session.execute(stmt).all()
+            return [row for row in result]

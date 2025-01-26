@@ -11,11 +11,13 @@ from textual.widgets import (
     Input,
     OptionList,
     Placeholder,
-    RichLog
+    RichLog,
 )
+from textual.widgets.option_list import Option, Separator
 from textual.screen import Screen
 from textual.containers import Vertical, VerticalGroup, Container, Center, Horizontal
 from models import Book, Tag
+from textual import log
 
 
 db_actions = dbActions()
@@ -57,19 +59,26 @@ class biblotecaApp(App):
         with Horizontal(id="body"):
             with Vertical(id="sidebar"):
 
-                yield ListView(
-                    ListItem(Label("All")),
-                    ListItem(Label("Reading")),
-                    ListItem(Label("To Read")),
-                    ListItem(Label("Read")),
+                all_tag_count = db_actions.get_all_tags()
+                tag_option_list = [tag[0] for tag in all_tag_count]
+                # log(tag_option_list)
+
+                yield OptionList(
+                    "All",
+                    "Reading",
+                    "To Read",
+                    "Read",
+                    Separator(),
+                    *tag_option_list,  # TODO Need to look into the unpack operator and learn it's uses
                 )
 
             yield DataTable()
-            with Vertical(id= 'book-info'):
+            with Vertical(id="book-info"):
                 yield Placeholder(id="book-cover")
-                yield RichLog (id= 'book-details')
+                yield RichLog(id="book-details")
             yield Footer()
 
+    #  Datatable to list all the books in the db with the appropriate info
     def load_and_populate_table(self):
         table = self.query_one(DataTable)
         table.clear()
