@@ -156,3 +156,31 @@ class dbActions:
 
             result = session.execute(stmt).all()
             return [row for row in result]
+
+    def get_books_by_tag(self, tag_name):
+        with self.session_factory() as session:
+            stmt = sa.select(Book).where(
+                sa.exists().where(
+                    (Book.id == book_tag_table.c.book_id)
+                    & (Tag.id == book_tag_table.c.tag_id)
+                    & (Tag.name == tag_name)
+                )
+            )
+
+            results = session.execute(stmt)
+            book_list = results.scalars().all()
+            book_details = []
+            for book in book_list:
+                book_details.append(
+                    (
+                        book.id,
+                        book.title,
+                        book.author,
+                        book.pages,
+                        book.progress,
+                        book.status,
+                        f"⭐ {book.rating}",
+                        ", ".join([tag.name for tag in book.tags]),
+                    )
+                )
+            return book_details

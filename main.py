@@ -78,6 +78,10 @@ class biblotecaApp(App):
                 yield RichLog(id="book-details")
             yield Footer()
 
+    def on_option_list_option_highlighted(self, event: OptionList.OptionHighlighted):
+        if event.option is not None:
+            log(f"Highlighted option: {event.option.prompt}")
+
     #  Datatable to list all the books in the db with the appropriate info
     def load_and_populate_table(self):
         table = self.query_one(DataTable)
