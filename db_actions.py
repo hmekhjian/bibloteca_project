@@ -184,3 +184,26 @@ class dbActions:
                     )
                 )
             return book_details
+
+    def get_books_by_status(self, status):
+        with self.session_factory() as session:
+            stmt = sa.select(Book).where(Book.status == status)
+
+            results = session.execute(stmt)
+            book_list = results.scalars().all()
+            book_details = []
+            for book in book_list:
+                book_details.append(
+                    (
+                        book.id,
+                        book.title,
+                        book.author,
+                        book.pages,
+                        book.progress,
+                        book.status,
+                        f"⭐ {book.rating}",
+                        ", ".join([tag.name for tag in book.tags]),
+                    )
+                )
+
+            return book_details

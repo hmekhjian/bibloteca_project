@@ -64,12 +64,16 @@ class biblotecaApp(App):
                 # log(tag_option_list)
 
                 yield OptionList(
+                    Option(
+                        prompt="Filter by status", id="optionSection", disabled=True
+                    ),
                     "All",
                     "Reading",
                     "To Read",
                     "Read",
                     Separator(),
-                    *tag_option_list,  # TODO Need to look into the unpack operator and learn it's uses
+                    Option(prompt="Filter by tag", id="optionSection", disabled=True),
+                    *tag_option_list,
                 )
 
             yield DataTable()
@@ -79,8 +83,20 @@ class biblotecaApp(App):
             yield Footer()
 
     def on_option_list_option_highlighted(self, event: OptionList.OptionHighlighted):
+        status_list = ["Reading", "To Read", "Read"]
         if event.option is not None:
-            log(f"Highlighted option: {event.option.prompt}")
+            if event.option.prompt == "All":
+                self.load_and_populate_table()
+            elif event.option.prompt in status_list:
+                table = self.query_one(DataTable)
+                table.clear()
+                table_data = db_actions.get_books_by_status(event.option.prompt)
+                table.add_rows(table_data)
+            else:
+                table = self.query_one(DataTable)
+                table.clear()
+                table_data = db_actions.get_books_by_tag(event.option.prompt)
+                table.add_rows(table_data)
 
     #  Datatable to list all the books in the db with the appropriate info
     def load_and_populate_table(self):
