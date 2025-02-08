@@ -17,8 +17,8 @@ from textual.widgets.option_list import Option, Separator
 from textual.screen import Screen
 from textual.containers import Vertical, VerticalGroup, Container, Center, Horizontal
 from models import Book, Tag
-from textual import log
-
+from textual import log, on, work
+import book_api
 
 db_actions = dbActions()
 
@@ -39,10 +39,23 @@ class Book_addition(Screen):
             with Center():
                 yield Input(placeholder="Book title, Author or ISBN", id="book-search")
             with Center():
-                yield OptionList(id="search-results")
+                self.search_results = OptionList(id="search-results")
+                yield self.search_results
             with Center():
                 yield Button("Add Book", id="add-book-button")
             yield Footer()
+
+    @on(Input.Submitted, "#book-search")
+    def search_books(self, event: Input.Submitted):
+        search_term = book_api.safe_search_term(event.input.value)
+        book_api.search_book(book_api.api_key, search_term, 5)
+
+        if search_term:
+            self.search_results.clear_options()
+            self.search_results.add_option("Searching...")
+        else:
+            self.search_results.clear_options()
+            self.search_results.add_option("Nothing Found :(")
 
 
 class biblotecaApp(App):
