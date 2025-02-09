@@ -18,7 +18,9 @@ from textual.screen import Screen
 from textual.containers import Vertical, VerticalGroup, Container, Center, Horizontal
 from models import Book, Tag
 from textual import log, on, work
+from textual.reactive import reactive
 import book_api
+from typing import Optional, Dict, Any
 
 db_actions = dbActions()
 
@@ -34,6 +36,8 @@ class Book_addition(Screen):
 
     BINDINGS = [("b", "app.pop_screen", "Go Back")]
 
+    results: reactive[Optional[Dict[str, Any]]] = reactive(None)
+
     def compose(self) -> ComposeResult:
         with Container(id="book-addition-dialog"):
             with Center():
@@ -46,16 +50,44 @@ class Book_addition(Screen):
             yield Footer()
 
     @on(Input.Submitted, "#book-search")
-    def search_books(self, event: Input.Submitted):
-        search_term = book_api.safe_search_term(event.input.value)
-        book_api.search_book(book_api.api_key, search_term, 5)
+    async def search_books(self, event: Input.Submitted):
+        search_term = book_api.safe_search_term(event.value)
 
         if search_term:
             self.search_results.clear_options()
-            self.search_results.add_option("Searching...")
+            self.search_results.add_option(Option("Searching..."))
+            self.api_search(search_term)
+            self.create_options()
         else:
             self.search_results.clear_options()
-            self.search_results.add_option("Nothing Found :(")
+            self.search_results.add_option(Option("Nothing Found :("))
+
+    @work(exclusive=True)
+    async def api_search(self, search_term):
+        try:
+            self.results = await book_api.search_book(book_api.api_key, search_term, 5)
+
+        except Exception as e:
+            self.show_results([Option(f"Error: {e}")])
+
+    def create_options(self):
+        if self.results != None:
+            options = [
+                Option(f"{item["volumeInfo"]["title"]} ")
+                for item in self.results["items"]
+            ]
+            self.show_results(options)
+        else:
+            self.show_results([Option("No Results Found", disabled=True)])
+
+    def show_results(self, options: list[Option]):
+        self.search_results.clear_options()
+        for option in options:
+            self.search_results.add_option(option)
+
+    @on(OptionList.OptionHighlighted, "#search-results")
+    def prepare_book_info():
+        pass
 
 
 class biblotecaApp(App):
@@ -76,7 +108,7 @@ class biblotecaApp(App):
                 tag_option_list = [tag[0] for tag in all_tag_count]
                 # log(tag_option_list)
 
-                yield OptionList(
+                self.filter_list = OptionList(
                     Option(
                         prompt="Filter by status", id="optionSection", disabled=True
                     ),
@@ -87,14 +119,16 @@ class biblotecaApp(App):
                     Separator(),
                     Option(prompt="Filter by tag", id="optionSection", disabled=True),
                     *tag_option_list,
+                    id="filter-list",
                 )
-
+                yield self.filter_list
             yield DataTable()
             with Vertical(id="book-info"):
                 yield Placeholder(id="book-cover")
                 yield RichLog(id="book-details")
             yield Footer()
 
+    @on(OptionList.OptionHighlighted, "#filter-list")
     def on_option_list_option_highlighted(self, event: OptionList.OptionHighlighted):
         status_list = ["Reading", "To Read", "Read"]
         if event.option is not None:
@@ -148,7 +182,6 @@ class biblotecaApp(App):
             "id", "title", "author", "pages", "progress", "status", "rating", "tags"
         )
         self.load_and_populate_table()
-        table = self.query_one(DataTable)
         table.focus()
 
 

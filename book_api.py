@@ -1,4 +1,6 @@
+import asyncio
 import requests, json
+import httpx
 import configparser
 import urllib.parse
 
@@ -11,7 +13,7 @@ api_key = config["google_books"]["api_key"]
 
 
 # Search request
-def search_book(api_key, search_term, max_results):
+async def search_book(api_key, search_term, max_results):
     gb_api_search = "https://www.googleapis.com/books/v1/volumes"
     params = {
         "q": search_term,
@@ -21,16 +23,17 @@ def search_book(api_key, search_term, max_results):
         "orderBy": "relevance",
     }
 
-    r = requests.get(gb_api_search, params=params)
-    data = r.json()
+    async with httpx.AsyncClient() as client:
+        r = await client.get(gb_api_search, params=params)
+        r.raise_for_status()
+        data = r.json()
 
     return data
 
 
-
 def safe_search_term(search_term):
     return urllib.parse.quote(search_term)
-    
+
 
 # books_temp = search_book(api_key, safe_search_term, 5)
 # formatted_json = json.dumps(books_temp, indent=4)
