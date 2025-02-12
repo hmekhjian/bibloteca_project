@@ -19,6 +19,7 @@ from textual.containers import Vertical, VerticalGroup, Container, Center, Horiz
 from models import Book, Tag
 from textual import log, on, work
 from textual.reactive import reactive
+from textual.message import Message
 import book_api
 from typing import Optional, Dict, Any
 
@@ -36,7 +37,11 @@ class Book_addition(Screen):
 
     BINDINGS = [("b", "app.pop_screen", "Go Back")]
 
-    results: reactive[Optional[Dict[str, Any]]] = reactive(None)
+    results = reactive([])
+
+    class BookAdded(Message):
+        def __init__(self) -> None:
+            super().__init__()
 
     def compose(self) -> ComposeResult:
         with Container(id="book-addition-dialog"):
@@ -57,7 +62,7 @@ class Book_addition(Screen):
             self.search_results.clear_options()
             self.search_results.add_option(Option("Searching..."))
             self.api_search(search_term)
-            self.create_options()
+
         else:
             self.search_results.clear_options()
             self.search_results.add_option(Option("Nothing Found :("))
@@ -67,27 +72,33 @@ class Book_addition(Screen):
         try:
             self.results = await book_api.search_book(book_api.api_key, search_term, 5)
 
+            if self.results != None:
+                options = [
+                    Option(f"{item["volumeInfo"]["title"]} ")
+                    for item in self.results["items"]
+                ]
+                self.show_results(options)
+            else:
+                self.show_results([Option("No Results Found", disabled=True)])
+
         except Exception as e:
             self.show_results([Option(f"Error: {e}")])
-
-    def create_options(self):
-        if self.results != None:
-            options = [
-                Option(f"{item["volumeInfo"]["title"]} ")
-                for item in self.results["items"]
-            ]
-            self.show_results(options)
-        else:
-            self.show_results([Option("No Results Found", disabled=True)])
 
     def show_results(self, options: list[Option]):
         self.search_results.clear_options()
         for option in options:
             self.search_results.add_option(option)
 
-    @on(OptionList.OptionHighlighted, "#search-results")
-    def prepare_book_info():
-        pass
+    @on(OptionList.OptionSelected, "#search-results")
+    def select_book(self):
+        i = self.search_results.highlighted
+        selected_title = self.results["items"][i]["volumeInfo"]["title"]
+        selected_author = self.results["items"][i]["volumeInfo"]["authors"][0]
+        selected_pages = self.results["items"][i]["volumeInfo"]["pageCount"]
+        log(selected_author, selected_title, selected_pages)
+        db_actions.add_book(selected_title, selected_author, selected_pages)
+        self.post_message(self.BookAdded())
+        app.pop_screen()
 
 
 class biblotecaApp(App):
@@ -175,6 +186,10 @@ class biblotecaApp(App):
         new_book_screen = Book_addition()
         self.query_one(ComposeResult).mount(new_book_screen)
         new_book_screen.scroll_visible()
+
+    @on(Book_addition.BookAdded)
+    def on_book_added(self, event: Book_addition.BookAdded):
+        self.load_and_populate_table()
 
     def on_mount(self) -> None:
         table = self.query_one(DataTable)
