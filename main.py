@@ -132,8 +132,12 @@ class biblotecaApp(App):
                     *tag_option_list,
                     id="filter-list",
                 )
+                self.filter_list.border_title = "Filter Books"
                 yield self.filter_list
-            yield DataTable()
+            with Container():
+                self.book_list = DataTable(id="book-list")
+                self.book_list.border_title = "Book Results"
+                yield self.book_list
             with Vertical(id="book-info"):
                 yield Placeholder(id="book-cover")
                 yield RichLog(id="book-details")

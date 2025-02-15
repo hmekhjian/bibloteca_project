@@ -24,3 +24,12 @@
 Book_addition {
     align: center middle;
 }
+
+
+#filter_list {
+    border: solid #fff
+}
+
+#book-list {
+    border: solid #fff
+}
