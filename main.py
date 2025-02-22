@@ -119,21 +119,21 @@ class biblotecaApp(App):
                 tag_option_list = [tag[0] for tag in all_tag_count]
                 # log(tag_option_list)
 
-                self.filter_list = OptionList(
-                    Option(
-                        prompt="Filter by status", id="optionSection", disabled=True
-                    ),
-                    "All",
-                    "Reading",
-                    "To Read",
-                    "Read",
-                    Separator(),
-                    Option(prompt="Filter by tag", id="optionSection", disabled=True),
+                self.status_filter_list = OptionList(
+                    Option("All"),
+                    Option("Reading"),
+                    Option("To Read"),
+                    Option("Read"),
+                )
+                self.status_filter_list.border_title = "Status Filter"
+                yield self.status_filter_list
+
+                self.tag_filter_list = OptionList(
                     *tag_option_list,
                     id="filter-list",
                 )
-                self.filter_list.border_title = "Filter Books"
-                yield self.filter_list
+                self.tag_filter_list.border_title = "Tag Filter"
+                yield self.tag_filter_list
             with Container():
                 self.book_list = DataTable(id="book-list")
                 self.book_list.border_title = "Book Results"
@@ -143,7 +143,7 @@ class biblotecaApp(App):
                 yield RichLog(id="book-details")
             yield Footer()
 
-    @on(OptionList.OptionHighlighted, "#filter-list")
+    @on(OptionList.OptionHighlighted, "#status-filter-list")
     def on_option_list_option_highlighted(self, event: OptionList.OptionHighlighted):
         status_list = ["Reading", "To Read", "Read"]
         if event.option is not None:
@@ -160,15 +160,6 @@ class biblotecaApp(App):
                 table_data = db_actions.get_books_by_tag(event.option.prompt)
                 table.add_rows(table_data)
 
-    #  Datatable to list all the books in the db with the appropriate info
-    def load_and_populate_table(self):
-        table = self.query_one(DataTable)
-        table.clear()
-        table.cursor_type = "row"
-        table.zebra_stripes = True
-
-        table_data = db_actions.list_books()
-        table.add_rows(table_data)
 
     def action_remove_book(self):
         table = self.query_one(DataTable)

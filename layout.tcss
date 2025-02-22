@@ -27,8 +27,8 @@ Book_addition {
 
 
 #filter_list {
-    border: solid #fff
-}
+    border: solid #fff;
+    }
 
 #book-list {
     border: solid #fff
