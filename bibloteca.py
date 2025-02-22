@@ -1,47 +1,56 @@
 from db_actions import dbActions
-db_actions = dbActions()
+import asyncio
+
+
+async def main():
+    db_actions = dbActions()
+
+    books = await db_actions.get_books_by_tag("war")
+    print(books)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
+
 # books_data = [
 #     {
-#         "title": "The Hitchhiker's Guide to the Galaxy",
-#         "author": "Douglas Adams",
+#         "title": "the hitchhiker's guide to the galaxy",
+#         "author": "douglas adams",
 #         "pages": 224,
-#         "status": "Read",
+#         "status": "read",
 #         "tag_names": ["sci-fi", "comedy", "classic"],
 #     },
 #     {
-#         "title": "Pride and Prejudice",
-#         "author": "Jane Austen",
+#         "title": "pride and prejudice",
+#         "author": "jane austen",
 #         "pages": 432,
-#         "status": "To Read",
+#         "status": "to read",
 #         "tag_names": ["classic", "romance", "fiction"],
 #     },
 #     {
-#         "title": "The Lord of the Rings",
-#         "author": "J.R.R. Tolkien",
+#         "title": "the lord of the rings",
+#         "author": "j.r.r. tolkien",
 #         "pages": 1216,
-#         "status": "Reading",
+#         "status": "reading",
 #         "tag_names": ["fantasy", "classic", "adventure"],
 #     },
 #     {
-#         "title": "The Book Thief",
-#         "author": "Markus Zusak",
+#         "title": "the book thief",
+#         "author": "markus zusak",
 #         "pages": 552,
-#         "status": "Read",
+#         "status": "read",
 #         "tag_names": ["historical fiction", "war", "young adult"],
 #     },
 #     {
-#         "title": "The Martian",
-#         "author": "Andy Weir",
+#         "title": "the martian",
+#         "author": "andy weir",
 #         "pages": 384,
-#         "status": "Read",
+#         "status": "read",
 #         "tag_names": ["sci-fi", "survival", "adventure"],
 #     },
 # ]
 
-# # Add the sample data to the database
+# # add the sample data to the database
 # for book_data in books_data:
-#     db_actions.add_book(**book_data)
-
-
-books = db_actions.get_books_by_tag('war')
-print(books)
+#  db_actions.add_book(**book_data)

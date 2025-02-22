@@ -1,35 +1,44 @@
 from textual.containers import Container
-from textual.widgets import DataTable, Static, OptionList
-from main import db_actions
+from textual.app import ComposeResult
+from textual.widgets import DataTable
+from db_actions import dbActions
+from textual import work, on
 
 
-class resultsTable(DataTable, inherit_bindings=False, id="results_table"):
+class ResultsTable(DataTable, inherit_bindings=False):
     DEFAULT_CSS = """
-        Book_results {
+        .Book_results {
             height: 100%
             width: 100%}
         """
+
+    def __init__(self, *args, **kwargs):
+        super.__init__(*args, **kwargs)
+        self.db_actions = dbActions()
+        self.add_class("Book_results")
 
     def on_mount(self) -> None:
         self.add_columns(
             "id", "title", "author", "pages", "progress", "status", "rating", "tags"
         )
+        self.load_table()
 
     #  Datatable to list all the books in the db with the appropriate info
-    def load_table(self):
-        table = self
-        table.clear()
-        table.cursor_type = "row"
-        table.zebra_stripes = True
+    @work(exclusive=True)
+    async def load_table(self):
+        self.clear()
+        self.cursor_type = "row"
+        self.zebra_stripes = True
 
-        table_data = db_actions.list_books()
-        table.add_rows(table_data)
+        table_data = await self.db_actions.list_books()
+        self.add_rows(table_data)
 
 
-class resultsViewer(Container, can_focus=True, id="results-viewer"):
+class ResultsViewer(Container, can_focus=True, id="results-viewer"):
     BORDER_TITLE = "Book Results"
 
+    def compose(self) -> ComposeResult:
+        yield ResultsTable()
+
     def on_mount(self, event):
-        results = self.query_one(resultsTable)
-        results.load_table()
-        results.focus()
+        self.query_one(ResultsTable).focus()
