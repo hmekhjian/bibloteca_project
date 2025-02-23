@@ -54,9 +54,13 @@ class biblotecaApp(App):
     CSS_PATH = "layout.tcss"
 
     def compose(self) -> ComposeResult:
-        with Container():
-            self.book_list_viewer = ResultsViewer(id="results-viewer")
-            yield self.book_list_viewer
+        with Horizontal(id="body"):
+            with Vertical(id="sidebar"):
+                yield Static()
+            with Container():
+                self.book_list_viewer = ResultsViewer(id="results-viewer")
+                yield self.book_list_viewer
+        yield Footer()
 
 
 # class Book_Edit(Screen):
