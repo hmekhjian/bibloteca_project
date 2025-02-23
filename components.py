@@ -5,17 +5,16 @@ from db_actions import dbActions
 from textual import work, on
 
 
-class ResultsTable(DataTable, inherit_bindings=False):
+class ResultsTable(DataTable):
     DEFAULT_CSS = """
         .Book_results {
-            height: 100%
-            width: 100%}
+            height: 100%;
+            width: 100%;}
         """
 
-    def __init__(self, *args, **kwargs):
-        super.__init__(*args, **kwargs)
+    def __init__(self):
+        super().__init__()
         self.db_actions = dbActions()
-        self.add_class("Book_results")
 
     def on_mount(self) -> None:
         self.add_columns(
@@ -28,13 +27,12 @@ class ResultsTable(DataTable, inherit_bindings=False):
     async def load_table(self):
         self.clear()
         self.cursor_type = "row"
-        self.zebra_stripes = True
 
         table_data = await self.db_actions.list_books()
         self.add_rows(table_data)
 
 
-class ResultsViewer(Container, can_focus=True, id="results-viewer"):
+class ResultsViewer(Container, can_focus=True):
     BORDER_TITLE = "Book Results"
 
     def compose(self) -> ComposeResult:

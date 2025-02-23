@@ -20,17 +20,43 @@ from models import Book, Tag
 from textual import log, on, work
 from textual.reactive import reactive
 from textual.message import Message
+from textual.theme import Theme
 import book_api
 from typing import Optional, Dict, Any
 from components import ResultsViewer
 
+rose_pine = Theme(
+    name="rose_pine",
+    primary="#ea9a97",
+    secondary="#eb6f92",
+    accent="#f6c177",
+    foreground="#e0def4",
+    background="#232136",
+    success="#A3BE8C",
+    warning="#EBCB8B",
+    error="#BF616A",
+    surface="#2a273f",
+    panel="#232136",
+    dark=True,
+    variables={
+        "block-cursor-text-style": "none",
+        "footer-key-foreground": "#88C0D0",
+        "input-selection-background": "#81a1c1 35%",
+    },
+)
 
-class Bibloteca(App):
+
+class biblotecaApp(App):
+    def on_mount(self) -> None:
+        self.register_theme(rose_pine)
+        self.theme = "rose_pine"
+
+    CSS_PATH = "layout.tcss"
 
     def compose(self) -> ComposeResult:
         with Container():
-            self.book_list_viewer = ResultsViewer()
-            yield self.book_list
+            self.book_list_viewer = ResultsViewer(id="results-viewer")
+            yield self.book_list_viewer
 
 
 # class Book_Edit(Screen):
