@@ -23,7 +23,7 @@ from textual.message import Message
 from textual.theme import Theme
 import book_api
 from typing import Optional, Dict, Any
-from components import ResultsViewer
+from components import ResultsViewer, ResultsTable
 
 rose_pine = Theme(
     name="rose_pine",
@@ -52,6 +52,7 @@ class biblotecaApp(App):
         self.theme = "rose_pine"
 
     CSS_PATH = "layout.tcss"
+    BINDINGS = [("d", "remove_book", "Remove highlighted book")]
 
     def compose(self) -> ComposeResult:
         with Horizontal(id="body"):
@@ -61,6 +62,22 @@ class biblotecaApp(App):
                 self.book_list_viewer = ResultsViewer(id="results-viewer")
                 yield self.book_list_viewer
         yield Footer()
+
+    async def action_remove_book(self):
+        table = self.book_list_viewer.query_one(ResultsTable)
+        if table.row_count > 0:
+            try:
+                row_key = table.cursor_row
+                row_data = table.get_row_at(row_key)
+                id_cell = row_data[0]
+
+                print(id_cell)
+
+                await table.db_actions.remove_book(id=id_cell)
+                table.load_table()
+
+            except Exception as e:
+                self.log(f"Error removing book: {e}")
 
 
 # class Book_Edit(Screen):
@@ -198,22 +215,6 @@ class biblotecaApp(App):
 #                 table.add_rows(table_data)
 
 
-#     def action_remove_book(self):
-#         table = self.query_one(DataTable)
-#         if table.row_count > 0:
-#             try:
-#                 row_key = table.cursor_row
-#                 row_data = table.get_row_at(row_key)
-#                 id_cell = row_data[0]
-
-#                 print(id_cell)
-
-#                 db_actions.remove_book(id=id_cell)
-#                 self.load_and_populate_table()
-
-#             except Exception as e:
-#                 self.log(f"Error removing book: {e}")
-
 #     def action_add_book(self):
 #         new_book_screen = Book_addition()
 #         self.query_one(ComposeResult).mount(new_book_screen)
@@ -223,13 +224,7 @@ class biblotecaApp(App):
 #     def on_book_added(self, event: Book_addition.BookAdded):
 #         self.load_and_populate_table()
 
-#     def on_mount(self) -> None:
-#         table = self.query_one(DataTable)
-#         table.add_columns(
-#             "id", "title", "author", "pages", "progress", "status", "rating", "tags"
-#         )
-#         self.load_and_populate_table()
-#         table.focus()
+
 
 
 if __name__ == "__main__":

@@ -27,7 +27,6 @@ class ResultsTable(DataTable):
     async def load_table(self):
         self.clear()
         self.cursor_type = "row"
-
         table_data = await self.db_actions.list_books()
         self.add_rows(table_data)
 
