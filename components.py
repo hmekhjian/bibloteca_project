@@ -43,7 +43,7 @@ class ResultsViewer(Container, can_focus=True):
 
 
 # Sidebar Components
-class FilterList(OptionList):
+class FilterList(OptionList, can_focus=True):
     def __init__(self):
         super().__init__()
         self.db_actions = dbActions()
@@ -53,7 +53,8 @@ class FilterList(OptionList):
         self.load_filters()
 
     def load_filters(self) -> None:
-        self.add_options(["All", "Reading", "To Read", "Read"])
+        self.add_option(Option("All"))
+        self.add_option(Option("Reading"))
 
 
 class TagList(OptionList):
@@ -73,7 +74,7 @@ class TagList(OptionList):
             self.add_option(Option(tag))
 
 
-class Sidebar(Container, can_focus=True):
+class Sidebar(Container):
     BORDER_TITLE = "Filters"
 
     def compose(self) -> ComposeResult:

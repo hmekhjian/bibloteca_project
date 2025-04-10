@@ -55,6 +55,7 @@ class biblotecaApp(App):
     BINDINGS = [("d", "remove_book", "Remove highlighted book")]
 
     def compose(self) -> ComposeResult:
+        yield OptionList(Option(123), Option(34446))
         with Horizontal(id="body"):
             self.sidebar = Sidebar(id="sidebar")
             yield self.sidebar
