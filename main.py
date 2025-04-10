@@ -23,7 +23,7 @@ from textual.message import Message
 from textual.theme import Theme
 import book_api
 from typing import Optional, Dict, Any
-from components import ResultsViewer, ResultsTable
+from components import ResultsViewer, ResultsTable, FilterList, TagList, Sidebar
 
 rose_pine = Theme(
     name="rose_pine",
@@ -56,8 +56,8 @@ class biblotecaApp(App):
 
     def compose(self) -> ComposeResult:
         with Horizontal(id="body"):
-            with Vertical(id="sidebar"):
-                yield Static()
+            self.sidebar = Sidebar(id="sidebar")
+            yield self.sidebar
             with Container():
                 self.book_list_viewer = ResultsViewer(id="results-viewer")
                 yield self.book_list_viewer
@@ -223,8 +223,6 @@ class biblotecaApp(App):
 #     @on(Book_addition.BookAdded)
 #     def on_book_added(self, event: Book_addition.BookAdded):
 #         self.load_and_populate_table()
-
-
 
 
 if __name__ == "__main__":
