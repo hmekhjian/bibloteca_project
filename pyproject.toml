@@ -1,0 +1,28 @@
+[project]
+name = "bibloteca" # Replace with your actual project name if different
+version = "0.1.0"
+description = "A reading and library management TUI"
+requires-python = ">=3.8"
+license = "MIT" 
+authors = [
+  { name = "Harouth Mekhjian", email = "ylssnstkm@mozmail.com" } 
+]
+keywords = ["textual", "sqlalchemy", "cli", "tui"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    # Removed: "License :: OSI Approved :: MIT License"
+]
+
+dependencies = [
+    "textual",
+    "SQLAlchemy",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+# Configuration for Setuptools to find packages in the 'src' directory
+[tool.setuptools.packages]
+find = { where = ["src"] }

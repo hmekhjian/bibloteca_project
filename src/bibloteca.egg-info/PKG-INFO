@@ -1,0 +1,12 @@
+Metadata-Version: 2.4
+Name: bibloteca
+Version: 0.1.0
+Summary: A reading and library management TUI
+Author-email: Harouth Mekhjian <ylssnstkm@mozmail.com>
+License-Expression: MIT
+Keywords: textual,sqlalchemy,cli,tui
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Requires-Dist: textual
+Requires-Dist: SQLAlchemy
